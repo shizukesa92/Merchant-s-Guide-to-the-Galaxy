@@ -1,4 +1,4 @@
-/* Case insensitivity assumption: All input is valid regardless of case
+/* Case insensitivity assumption: All input is valid regardless of case, regex expression tests have included case-insitive modifiers just in case
  * Punctuation assumption: No input contains punctuations except for question input types */
 
 
@@ -9,7 +9,7 @@ converter = (input) => {
 	input = input.toUpperCase();
 
 	/* Unit test: Checks for validity of roman numeral combination */
-	const validator = /^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/;
+	const validator = /^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/; /* Source: https://stackoverflow.com/questions/267399/how-do-you-match-only-valid-roman-numerals-with-a-regular-expression/5326535 */
 	if (!input.match(validator)) {
 		console.log("ERROR: Invalid roman numeral");
 		return false;
@@ -29,7 +29,7 @@ converter = (input) => {
 	return value;
 }
 
-/* Object variables storing the values of galactic numerals and goods per unit */
+/* Global object variables storing the values of galactic numerals and goods per unit */
 var unit = {
 
 	},
@@ -42,7 +42,7 @@ var unit = {
 
 /* Main function which parses user input as a string argument, validifies if it falls under the 4 pre-defined types of input patterns, and returns an output only if it is a query */
 
-parseInput = (input) => {
+exports.parseInput = (input) => {
 	input = input.toUpperCase();
 	inputLength = input.split(" ").length;
 
@@ -144,18 +144,5 @@ parseInput = (input) => {
 		console.log(name.toLowerCase() + " is " + input * goods + " Credits");
 
 	}
-
+	console.log("I have no idea what you're talking about");
 }
-
-parseInput("glob is I");
-parseInput("prok is V");
-parseInput("pish is X");
-parseInput("tegj is L");
-parseInput("glob glob Silver is 34 Credits");
-parseInput("glob prok Gold is 57800 Credits");
-parseInput("pish pish Iron is 3910 Credits");
-parseInput("how much is pish tegj glob glob ?");
-parseInput("how many Credits is glob prok Silver ?");
-parseInput("how many Credits is glob prok Gold ?");
-parseInput("how many Credits is glob prok Iron ?");
-parseInput("how much wood could a woodchuck chuck if a woodchuck could chuck wood ?");
