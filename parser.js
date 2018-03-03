@@ -1,12 +1,8 @@
 /* Case insensitivity assumption: All input is valid regardless of case, regex expression tests have included case-insitive modifiers just in case
  * Punctuation assumption: No input contains punctuations except for question input types */
 
-
-
-/* A function which accepts Roman numerals as an argument, converts it into Arabic numerals and returns the converted numerals */
-
+/* A function which accepts Roman numerals as an argument, converts it into Arabic numerals and returns the converted numerals as value */
 converter = (input) => {
-	input = input.toUpperCase();
 
 	/* Unit test: Checks for validity of roman numeral combination */
 	const validator = /^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/; /* Source: https://stackoverflow.com/questions/267399/how-do-you-match-only-valid-roman-numerals-with-a-regular-expression/5326535 */
@@ -30,29 +26,22 @@ converter = (input) => {
 }
 
 /* Global object variables storing the values of galactic numerals and goods per unit */
-var unit = {
+var unit = {},
+	good = {};
 
-	},
-
-	good = {
-
-	};
-
-
-
-/* Main function which parses user input as a string argument, validifies if it falls under the 4 pre-defined types of input patterns, and returns an output only if it is a query */
-
+/* Main function exported to nodeJS which parses user input as a string argument, validifies if it falls under the 4 pre-defined types of input patterns, and logs an output to console only if it is one of the two query types */
 exports.parseInput = (input) => {
 	input = input.toUpperCase();
 	inputLength = input.split(" ").length;
 
 	/* Case 1: String input which assigns a roman numeral to a galactic numeral 
 	 * Currency assignment syntax assumption: All galaxtic numerals are 1-word strings which correspond to 1-letter roman numeral separated by the word "is" */
-
 	if (inputLength == 3) {
+
+		/* Unit test: Checks for correct syntax */
 		const validator = /^[A-Z]+\s+IS\s+[I|V|X|L|C|D|M]$/i;
 		if (!input.match(validator)) {
-			console.log("ERROR: Invalid assignment a one-word galactic numeral to a one-word roman numeral");
+			console.log("ERROR: Invalid assignment a galactic numeral to a roman numeral");
 			return false;
 		}
 
@@ -63,8 +52,9 @@ exports.parseInput = (input) => {
 
 	/* Case 2: Multiple word input defining the vaue of a galactic good 
 	 * Good assignment syntax assumption: All goods contain one word and have integer values denoted by the word "credits" separated by the word "is" */
-
 	if (inputLength > 3 && input.slice(4, 8) !== "MANY" && input.slice(4, 8) !== "MUCH") {
+
+		/* Unit test: Checks for correct syntax */
 		const validator = /^([A-Z\s]+)IS\s+(\d+.?\d*)\s+CREDITS/i;
 		if (!input.match(validator)) {
 			console.log("ERROR: Invalid assignment to multiple units of a galactic good");
@@ -80,8 +70,6 @@ exports.parseInput = (input) => {
 		}
 		units = units.join("");
 		good[input[0]] = currency / converter(units);
-
-
 		return;
 	}
 
@@ -89,6 +77,7 @@ exports.parseInput = (input) => {
 	 * Galactic numeral query syntax assumption: Second word is "MUCH" and query ends with " ?" (note whitespace) */
 	if (input.slice(4, 8) == "MUCH") {
 
+		/* Unit test: Checks for correct syntax */
 		const validator = /^HOW\s+MUCH\s+IS\s+([A-Z\s]+)[?]$/i;
 		if (!(input.match(validator))) {
 			console.log("ERROR: Invalid galactic numeral query syntax");
@@ -98,11 +87,11 @@ exports.parseInput = (input) => {
 		const name = input.slice(12, -2);
 		input = name.split(" ").map(galactic => unit[galactic]);
 
+		/* Unit test: Checks if galactic numeral has been already been assigned a value */
 		if (input.indexOf(undefined) !== -1) {
 			console.log("ERROR: Undefined galactic numeral");
 			return false;
 		}
-
 
 		input = input.join("");
 		input = converter(input);
@@ -114,6 +103,7 @@ exports.parseInput = (input) => {
 	 * Galactic word query syntax assumption: Second word is "MANY" and query ends with " ?" (note whitespace) */
 	if (input.slice(4, 8) == "MANY") {
 
+		/* Unit test: Checks for correct syntax */
 		const validator = /^HOW\s+MANY\s+CREDITS\s+IS\s+([A-Z\s]+)[?]$/i;
 		if (!(input.match(validator))) {
 			console.log("ERROR: Invalid good query syntax");
@@ -125,6 +115,7 @@ exports.parseInput = (input) => {
 
 		input = input.split(" ").slice(4, -1);
 
+		/* Unit test: Checks if good has been already been assigned a value */
 		if (good[input[input.length - 1]] === undefined) {
 			console.log("ERROR: Undefined galactic good");
 			return false;
@@ -133,6 +124,7 @@ exports.parseInput = (input) => {
 		const goods = good[input[input.length - 1]];
 		input = input.slice(0, -1).map(galactic => unit[galactic]);
 
+		/* Unit test: Checks if galactic numeral has been already been assigned a value */
 		if (input.indexOf(undefined) !== -1) {
 			console.log("ERROR: Undefined galactic numeral");
 			return false;
@@ -140,9 +132,9 @@ exports.parseInput = (input) => {
 
 		input = input.join("");
 		input = converter(input);
-
 		console.log(name.toLowerCase() + " is " + input * goods + " Credits");
-
 	}
+
+	/* Handles inputs that do not fall under the 4 pre-defined categories and are not caught by the unit tests */
 	console.log("I have no idea what you're talking about");
 }
